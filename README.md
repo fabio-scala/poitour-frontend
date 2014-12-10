@@ -1,3 +1,3 @@
-POI Tour Client
+POI Tour Frontend
 ==============
-[![Build Status](https://travis-ci.org/fabioscala/poitour-client.svg)](https://travis-ci.org/fabioscala/poitour-client)
+[![Build Status](https://travis-ci.org/fabioscala/poitour-frontend.svg)](https://travis-ci.org/fabioscala/poitour-frontend)
