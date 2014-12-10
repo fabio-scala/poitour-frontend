@@ -1,0 +1,54 @@
+<div>
+	<i class="fa fa-close" style="position: absolute; top: 5px; right: 5px; cursor: pointer;" ng-click="onDismiss()" ></i>
+
+	<div ng-if="processing || !photos.length" class="panel" ng-style="{width: (maxWidth + 30) + 'px'}" style="height: 170px; text-align: center;">
+		<div class="panel-heading">
+				Fotos in der Nähe von {{lat | number: 5}},{{lon | number: 5}}
+		</div>
+		
+		<div class="panel-body">
+			<span ng-if="processing"><i class="fa fa-refresh fa-spin fa-4x" style="vertical-align: middle; line-height: inherit;"></i></span>
+			
+			<span ng-if="!processing && !photos.length">Es wurden leider keine Fotos gefunden</span>
+		</div>
+
+	</div>
+	
+	<div ng-if="!processing && photos.length" class="panel" ng-style="{width: (maxWidth + 30) + 'px'}">
+
+		<div class="panel-heading">
+			<a target="_blank"
+				ng-href="https://www.flickr.com/photos/{{photos[active].ownerId}}/{{photos[active].photoId}}"
+			>
+				Foto <span ng-if="photos[active].title">&quot;{{photos[active].title | limitTo: 40}}{{photos[active].title.length > 40 ? '...' : ''}}&quot; </span>von {{photos[active].ownerName}}
+			</a> in der Nähe von {{lat | number: 5}},{{lon | number: 5}}
+			
+			<!--
+			<div rn-carousel-indicators ng-if="photos.length > 1" slides="photos" rn-carousel-index="active"></div>
+			 -->
+		</div>
+	
+		<div class="panel-body" ng-style="{height: photos[active].height + 'px'}" style="box-sizing: content-box;">
+			<ul
+				style="height: 100%"
+				rn-carousel rn-carousel-index="active"
+				rn-carousel-transition="zoom"
+				rn-carousel-auto-slide
+				rn-carousel-buffered
+			>
+				<li ng-repeat="photo in photos">
+					<a target="_blank"
+						ng-href="https://www.flickr.com/photos/{{::photo.ownerId}}/{{::photo.photoId}}"
+					>
+						<!-- ngIf: do not load all at once -->
+						<img ng-if="$index - 3 <= active" ng-style="{width: photo.width + 'px', height: photo.height + 'px'}"
+							ng-src="{{::photo.url}}"
+						/>
+					</a>
+						
+				</li>
+			</ul>
+		</div>
+	
+	</div>
+</div>

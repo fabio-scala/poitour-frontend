@@ -1,0 +1,205 @@
+html, body {
+	height: 100%;
+	width: 100%;
+}
+
+.fill {
+	min-height: 100%;
+	height: 100%;
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+
+.angular-leaflet-map {
+	height: 100%;
+	width: 100%;
+	min-height: 100%;
+}
+
+#loading-bar-spinner {
+	display: none !important;
+}
+
+.visibility-hidden {
+	visibility: hidden;
+}
+
+/* Fix for modal dialog */
+.modal-backdrop {
+	display: block;
+}
+
+
+.title-font {
+	font-family: 'Pacifico';
+}
+
+.title img {
+	width: 75px;
+	height: 75px;
+	vertical-align: middle;
+	text-align: left;
+	float: left;
+}
+
+.title {
+	color: black;
+}
+
+a.title:hover {
+    text-decoration: none;
+    color: black;
+}
+
+.title h1 {
+	text-align: left;
+	float: left;
+	margin-left: 15px;
+	margin-bottom: 0px;
+}
+
+.title #subtitle {
+	text-align: right;
+}
+
+.title hr {
+	clear: both;
+}
+
+body {
+	overflow: hidden;
+}
+
+#sidebar {
+	height: 100%;
+	padding: 10px 10px 0px 10px;
+	width: 300px;
+	float: left;
+	overflow-y: auto;
+	overflow-x: hidden;
+	
+	position: relative;
+	z-index: 10;
+	box-shadow: 5px 0px 30px 0px rgba(0,0,0,0.75);
+}
+
+
+form .tooltip-inner {
+	text-align:left !important;
+}
+
+/* Form scrollbar style (webkit only) */
+#sidebar::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+#sidebar::-webkit-scrollbar {
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+	background-color: #000000;
+}
+
+#map {
+	margin-left: 300px;
+	height: 100%;
+	padding: 0;
+}
+
+/* Link color within category selection */
+.ui-select-bootstrap .ui-select-choices-row.active a {
+	color: white !important;
+}
+
+.ui-select-match-item.btn-primary a {
+	color: white !important;
+}
+
+/* Help text and alert animations */
+.help-block.ng-hide-remove {
+	-webkit-animation: fadeInDown 0.5s;
+	-moz-animation: fadeInDown 0.5s;
+	-ms-animation: fadeInDown 0.5s;
+	animation: fadeInDown 0.5s;
+}
+
+/* Looks choppy, disable for the moment
+.help-block.ng-hide-add {
+	-webkit-animation: fadeOutUp 0.5s;
+	-moz-animation: fadeOutUp 0.5s;
+	-ms-animation: fadeOutUp 0.5s;
+	animation: fadeOutUp 0.5s;
+}
+*/
+
+.alert.ng-hide-remove {
+	-webkit-animation: fadeInDown 0.5s;
+	-moz-animation: fadeInDown 0.5s;
+	-ms-animation: fadeInDown 0.5s;
+	animation: fadeInDown 0.5s;
+}
+
+/* Looks choppy, disable for the moment
+.alert.ng-hide-add {
+	-webkit-animation: fadeOutUp 0.5s;
+	-moz-animation: fadeOutUp 0.5s;
+	-ms-animation: fadeOutUp 0.5s;
+	animation: fadeOutUp 0.5s;
+}
+*/
+
+
+/* Fixed for Fontawesome & Bootstrap form feedback http://jsfiddle.net/KyleMit/eSt3s/ */
+.fa.form-control-feedback {
+	line-height: 34px; /* @input-height-base; */
+}
+
+.has-feedback-left input.form-control {
+	padding-left: 34px; /* @input-height-base; */
+	padding-right: 12px; /* @padding-base-horizontal */
+}
+
+.has-feedback-left .form-control-feedback {
+	left: 0;
+}
+
+.form-horizontal .has-feedback-left .form-control-feedback {
+	left: 12px; /* @grid-gutter-width / 2 */
+}
+
+
+/* Remove ugly IE clear button */
+input::-ms-clear {
+	display: none;
+}
+
+
+/* Animate selected categories */
+.selected-category.ng-enter {
+	-webkit-animation: fadeInDown 0.5s;
+	-moz-animation: fadeInDown 0.5s;
+	-ms-animation: fadeInDown 0.5s;
+	animation: fadeInDown 0.5s;
+}
+
+/* Looks choppy, disable for the moment
+.selected-category.ng-leave {
+	-webkit-animation: fadeOutUp 0.5s;
+	-moz-animation: fadeOutUp 0.5s;
+	-ms-animation: fadeOutUp 0.5s;
+	animation: fadeOutUp 0.5s;
+}
+*/
+
+/* Flickr Photo Carousel */
+.rn-carousel-indicator {
+	text-align: center !important;
+}
+.rn-carousel-indicator .active {
+	color: black !important;
+}

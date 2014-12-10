@@ -1,0 +1,395 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>POI Tour - Personalisierter Tourenplaner für Fussgänger</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+	<!-- favicons -->
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="icon" sizes="16x16 32x32 64x64" href="favicon/favicon.ico">
+	<link rel="icon" type="image/png" sizes="196x196" href="favicon/favicon-196.png">
+	<link rel="icon" type="image/png" sizes="160x160" href="favicon/favicon-160.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="favicon/favicon-64.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="favicon/favicon-152.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="favicon/favicon-144.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="favicon/favicon-120.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="favicon/favicon-114.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="favicon/favicon-76.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="favicon/favicon-72.png">
+	<link rel="apple-touch-icon" href="favicon/favicon-57.png">
+	<meta name="msapplication-TileColor" content="#FFFFFF">
+	<meta name="msapplication-TileImage" content="favicon/favicon-144.png">
+	<meta name="msapplication-config" content="favicon/browserconfig.xml">
+
+    <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.css" />
+    <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
+    <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" />
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="bower_components/Leaflet.contextmenu/dist/leaflet.contextmenu.css" />
+    <link rel="stylesheet" href="bower_components/animate.css/animate.css" />
+    <link rel="stylesheet" href="bower_components/angular-carousel/dist/angular-carousel.css" />
+    <link rel="stylesheet" href="bower_components/ngtoast/dist/ngToast.css" />
+    <!-- endbower -->
+    <link rel="stylesheet" href="bower_components/Leaflet.MousePosition/src/L.Control.MousePosition.css" />
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+    
+
+	<style type="text/css">
+		[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+			display: none !important;
+		}
+	</style>
+  </head>
+  
+  <body ng-app="poitourApp" ng-controller="MainCtrl as main" pt-block="!main.appLoader.isLoaded" pt-block-icon="cog">
+  <ng-toast></ng-toast>
+    <!--[if lt IE 9]>
+      <p class="browsehappy">Du verwendest einen <strong>veralteten</strong> Browser. Bitte <a target="_blank" href="http://browsehappy.com/">installiere einen aktuellen Browser</a> um POI Tour verwenden zu können.</p>
+    <![endif]-->
+
+	<!-- Add your site or application content here -->
+	<div class="container-fluid fill" ng-class="{'visibility-hidden': !main.appLoader.isLoaded}" ng-cloak>
+	
+		<div class="row-fluid fill">
+			<div pt-block="fc.processing" id="sidebar" ng-controller="FormCtrl as fc">
+			
+				<a href="/" class="title">
+					<img src="images/poitour-logo.png" />
+					<h1 class="title-font">POI Tour</h1>
+					<div class="title-font" id="subtitle">Switzerland</div>
+					<hr />
+				</a>
+				
+				<div class="alert alert-danger" ng-show="fc.errors.calculation">
+					Es ist ein Fehler aufgetreten! Versuche es mit anderen Eingaben oder später erneut.
+				</div>
+				<div class="alert alert-warning" ng-show="fc.errors.noTour">
+					Es wurde keine Tour gefunden. Bitte stelle sicher das Start und Ziel nicht mehr als {{fc.tour.hours}} h {{fc.tour.minutes}} min <em>Fussweg</em> (3.6 km/h) entfernt sind und die gewünschte Interessen in der Umgebung vorhanden sind.
+				</div>
+
+				<div class="alert alert-success" ng-show="fc.tourResult.hasResult">
+					<div class="row">
+						<strong class="col-xs-3">Dauer</strong>
+						<div class="col-xs-9">
+							<span ng-show="fc.tourResult.hours > 0">{{fc.tourResult.hours}} Stunde<span ng-show="fc.tourResult.hours > 1">n</span></span>
+							<span ng-show="fc.tourResult.minutes > 0">{{fc.tourResult.minutes}} Minute<span ng-show="fc.tourResult.minutes > 1">n</span></span>
+						</div>
+					</div>
+					
+					
+					<div class="row">
+						<strong class="col-xs-3">Strecke</strong>
+						<div class="col-xs-9">
+							<span ng-show="fc.tourResult.distance_km >= 1">{{fc.tourResult.distance_km}} Kilometer </span>
+							<span ng-show="fc.tourResult.distance_km < 1">{{fc.tourResult.distance_m}} Meter </span>
+						</div>
+					</div>
+				</div>
+				
+				<form name="form" novalidate>
+					<fieldset>
+					
+						<!-- From -->
+						<div class="form-group" ng-class="{'has-error': form.start.$invalid && (form.start.$dirty || fc.submitted && !form.start.$pending)}">
+							<label for="tour-from" class="control-label">
+							Start
+							<i class="fa fa-info-circle"
+								tooltip="An welchem Ort die Tour beginnen soll."  tooltip-trigger tooltip-placement="right"
+							></i>
+							</label>
+							
+							<div class="col-md-offset-0">
+								<div class="input-group">
+									<input
+										ng-model="fc.tour.start"
+										pt-location-validator="fc.setLocation('start', $promise)"
+										pt-focus="main.appLoader.isLoaded"
+										autofocus
+										ng-model-options="{updateOn: 'blur', allowInvalid: true}"
+										ng-change="fc.removeStartFromMap()"
+										required id="tour-from" name="start" type="text"
+										placeholder="z.B. Zürich Hauptbahnhof" class="form-control input-md" />
+										
+									<div ng-if="form.start.$pending" class="input-group-btn">
+									<button class="btn btn-default" type="button" disabled>
+										<i class="fa fa-refresh fa-spin"></i>
+									</button>
+									</div>
+										
+									<div ng-if="!form.start.$pending" class="input-group-btn"
+										tooltip="Meinen Standort verwenden"  tooltip-trigger tooltip-placement="top" tooltip-popup-delay="1000" tooltip-append-to-body="true"
+									>
+									<button class="btn btn-default" type="button" ng-click="fc.fixLocation('start')">
+										<i class="fa fa-location-arrow"></i>
+									</button>
+									</div>
+								</div>
+								 
+								<span class="help-block" ng-show="fc.submitted && form.start.$error.required">
+									Bitte geben Sie einen Startpunkt an
+								</span>
+								
+								<span class="help-block" ng-show="form.start.$error.location && !form.start.$error.required">
+									{{fc.tour.start}} wurde nicht gefunden
+								</span>
+								
+							</div>
+						</div>
+
+						<!-- To -->
+						<div class="form-group" ng-class="{'has-error': form.end.$invalid}">
+							<label for="tour-end" class="control-label">
+							Ziel (optional)
+							<i class="fa fa-info-circle"
+								tooltip="An welchem Ort die Tour enden soll. Falls leer wird wieder zum Start zurückgekehrt."  tooltip-trigger tooltip-placement="right"
+							></i>
+						
+							</label>
+							
+							<div class="col-md-offset-0">
+								<div class="input-group">
+									<input
+										ng-model="fc.tour.end"
+										pt-location-validator="fc.setLocation('end', $promise)"
+										ng-model-options="{updateOn: 'blur', allowInvalid: true}"
+										id="tour-end" name="end" type="text"
+										placeholder="z.B. Bellevue, Zürich" class="form-control input-md">
+										
+									<div ng-if="form.end.$pending" class="input-group-btn">
+									<button class="btn btn-default" type="button" disabled>
+										<i class="fa fa-refresh fa-spin"></i>
+									</button>
+									</div>
+										
+									<div ng-if="!form.end.$pending" class="input-group-btn"
+										tooltip="Meinen Standort verwenden"  tooltip-trigger tooltip-placement="top" tooltip-popup-delay="1000" tooltip-append-to-body="true"
+									>
+									<button class="btn btn-default" type="button" ng-click="fc.fixLocation('end')">
+										<i class="fa fa-location-arrow"></i>
+									</button>
+									</div>
+								</div>
+									
+								<span class="help-block" ng-show="form.end.$error.location">
+									{{fc.tour.end}} wurde nicht gefunden
+								</span>
+							</div>
+						</div>
+
+						<!-- Categories -->
+						<div class="form-group">
+							<label class="control-label" for="category-selection">
+							Interessen
+							<i class="fa fa-info-circle"
+								tooltip="Was wird unterwegs besucht und wie wichtig ist es, dass solche Interessenspunkte in der Tour vorkommen."  tooltip-trigger tooltip-placement="right"
+							></i>
+							</label>
+							
+							<div class="col-md-offset-0"  ng-class="{'has-error': form.categories.$error.empty}">
+								<ui-select
+									id="category-selection" name="categories" multiple
+									ng-model="fc.tour.categories" theme="bootstrap"
+									on-select="fc.selectCategory($item, $model)"
+									reset-search-input="true"
+									ui-validate="{empty: '$value.length != 0'}"
+								>
+									<ui-select-match style="display: none;" placeholder="Kategorie auswählen...">
+										<span ng-bind-html="$item.display_name"></span>
+									</ui-select-match>
+									<ui-select-choices repeat="category in fc.categories | filter: $select.search | orderBy: 'display_name'">
+										<div ng-bind-html="category.display_name"></div>
+										<small>
+											<span></span>
+										</small> 
+									</ui-select-choices>
+								</ui-select>
+								<span class="help-block" ng-show="form.categories.$error.empty">
+									Wähle mindestens eine Kategorie
+								</span>
+							</div>
+						</div>
+						
+						<table class="table">
+							<!-- ng class prevents initial animation of defaults -->
+							<tr ng-class="{'selected-category': main.appLoader.isLoaded}" ng-repeat="category in fc.tour.categories | orderBy: '-'">
+							
+							<td>
+							<span ng-bind-html="category.display_name"></span>
+								<!-- Splice index -> reversed order because of orderBy filter -->
+								<i class="fa fa-close" style="float: right; cursor: pointer;" ng-click="fc.tour.categories.splice(fc.tour.categories.length - $index - 1, 1)"></i>
+								<div>
+									<rating ng-model="category.weight" max="10"></rating>
+								</div>
+							</td>
+							</tr>
+						</table>
+
+						<!-- Duration -->
+						<div class="form-group form-inline" ng-class="{'has-error': form.hours.$invalid || form.minutes.$invalid}" >
+							<label for="tour-hours" class="control-label">
+							Gesamtdauer
+							<i class="fa fa-info-circle"
+								tooltip="Die maximale Dauer der Tour in Stunden und Minuten inkl. berücksichtigung der Aufenthaltsdauer."  tooltip-trigger tooltip-placement="right"
+							></i>
+							</label>
+							
+							<div class="col-md-offset-0">
+								<input ng-model="fc.tour.hours" ui-validate="{total: 'fc.isValidTime($value, fc.tour.minutes)'}" ui-validate-watch="'fc.tour.minutes'" style="width: 65px; text-align: center;" maxlength="2" id="tour-hours" type="number" step="1" min="0" max="6" size="2" name="hours" type="text" placeholder="h" class="form-control input-md">
+								h
+								<input ng-model="fc.tour.minutes" ui-validate="{total: 'fc.isValidTime(fc.tour.hours, $value)'}" ui-validate-watch="'fc.tour.hours'" style="width: 65px; text-align: center;" maxlength="2" id="tour-minutes" type="number" step="15" min="0" max="59" size="2" name="minutes" type="text" placeholder="mm" class="form-control input-md">
+								min
+								
+								<span class="help-block" ng-show="form.hours.$invalid && !form.hours.$error.total">
+									Die Anzahl Stunden ist ungültig (0-6)
+								</span>
+								<span class="help-block" ng-show="form.minutes.$invalid && !form.minutes.$error.total">
+									Die Anzahl Minuten ist ungültig (0-59)
+								</span>
+								<span class="help-block" ng-show="(form.hours.$error.total || form.minutes.$error.total)">
+									Bitte geben Sie eine Reisedauer ein
+								</span>
+							</div>
+						</div>
+						
+						<!-- Time per POI -->
+						<div class="form-group form-inline" ng-class="{'has-error': form.stayTime.$invalid}" >
+							<label for="stay-time" class="control-label">
+							Aufenthaltsdauer
+							<i class="fa fa-info-circle"
+								tooltip="Die geplante Aufenthaltsdauer pro Interessenspunkt in Minuten."  tooltip-trigger tooltip-placement="right"
+							></i>
+							</label>
+							
+							<div class="col-md-offset-0">
+								<input 
+									ui-validate="{exceedsDuration: '$value < fc.tour.hours * 60 + fc.tour.minutes'}"
+									ui-validate-watch="'[fc.tour.hours, fc.tour.minutes]'"
+									ng-model="fc.tour.stayTime" style="width: 67px; text-align: center;" maxlength="3" id="stay-time" type="number" step="5" min="5" max="120" size="3" name="stayTime" type="text" placeholder="mm" class="form-control input-md">
+								min
+								
+								<span class="help-block" ng-show="form.stayTime.$error.min || form.stayTime.$error.max">
+									Die Aufenthaltsdauer ist ungültig (5-120 Minuten)
+								</span>
+								
+								<span class="help-block" ng-show="form.stayTime.$error.exceedsDuration">
+									Die Aufenthaltsdauer darf die Gesamtdauer der Tour nicht überschreiten.
+								</span>
+								
+							</div>
+						</div>
+
+						<!-- Submit -->
+						<div class="form-group">
+							<div class="pull-right">
+								<button id="calc-tour" name="calc-tour" class="btn btn-primary" ng-click="fc.submit()">Tour vorschlagen</button>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+			
+			<div id="map" ng-controller="MapCtrl as map">
+				<div ng-if="map.flickrCarousel.show" style="position: absolute; right: 10px; top: 10px; z-index: 10;">
+					<pt-flickr-location-carousel 
+						lat="map.flickrCarousel.lat"
+						lon="map.flickrCarousel.lon"
+						on-dismiss="map.removePhotoCarousel()"
+					/>
+				</div>
+			
+				<leaflet width="100%" defaults="map.leaflet.defaults" center="map.leaflet.center" watch-markers="false" event-broadcast="map.leaflet.events"></leaflet>
+			</div>
+
+		</div>
+	</div>
+
+
+    <!-- build:js(.) scripts/oldieshim.js -->
+    <!--[if lt IE 9]>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/json3/lib/json3.js"></script>
+    <![endif]-->
+    <!-- endbuild -->
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/angular-ui-select/dist/select.js"></script>
+    <script src="bower_components/angular-ui-utils/ui-utils.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
+    <script src="bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="bower_components/leaflet/dist/leaflet-src.js"></script>
+    <script src="bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.js"></script>
+    <script src="bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+    <script src="bower_components/blockui/jquery.blockUI.js"></script>
+    <script src="bower_components/Leaflet.contextmenu/dist/leaflet.contextmenu.js"></script>
+    <script src="bower_components/Leaflet.contextmenu/dist/leaflet.contextmenu-src.js"></script>
+    <script src="bower_components/lodash/dist/lodash.compat.js"></script>
+    <script src="bower_components/angular-lodash/angular-lodash.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/angular-carousel/dist/angular-carousel.js"></script>
+    <script src="bower_components/ngtoast/dist/ngToast.js"></script>
+    <!-- endbower -->
+    <script src="bower_components/leaflet-polylinedecorator/leaflet.polylineDecorator.js"></script>
+    <script src="bower_components/Leaflet.MousePosition/src/L.Control.MousePosition.js"></script>
+    <!-- endbuild -->
+    
+    <!-- <script src="node_modules/angular-hint/dist/hint.js"></script> -->
+
+
+  <script type="text/javascript">
+  	if(!L.Icon.Default.imagePath) {
+	  	L.Icon.Default.imagePath = 'styles/images';
+  	}
+  </script>
+
+   <!-- build:js({.tmp,app}) scripts/scripts.js -->
+   <script src="scripts/app.js"></script>
+   <script src="scripts/controllers/main.js"></script>
+   <script src="scripts/controllers/map.js"></script>
+   <script src="scripts/controllers/form.js"></script>
+   <script src="scripts/services/nominatim.js"></script>
+   <script src="scripts/directives/block.js"></script>
+   <script src="scripts/services/appconfig.js"></script>
+   <script src="scripts/services/tooltipmarker.js"></script>
+   <script src="scripts/directives/focus.js"></script>
+   <script src="scripts/services/apploader.js"></script>
+   <script src="scripts/directives/locationvalidator.js"></script>
+   <script src="scripts/services/flickrphoto.js"></script>
+   <script src="scripts/directives/flickrlocationcarousel.js"></script>
+   <script src="scripts/services/geoutils.js"></script>
+   <!-- endbuild -->
+   
+	<script type="text/javascript">
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		
+		ga('create', 'UA-57029854-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+   
+</body>
+</html>
