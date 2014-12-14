@@ -16,7 +16,7 @@ angular.module('poitourApp').factory('FlickrPhoto', function($q, $http, $resourc
         _getByLocation: {
             method: 'JSONP',
             isArray: true,
-            // cache: true,
+            cache: true,
             params: {
                 method: 'flickr.photos.search',
                 extras: 'geo,url_m,owner_name',
