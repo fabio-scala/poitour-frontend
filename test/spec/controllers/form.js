@@ -93,7 +93,7 @@ describe('Controller: FormCtrl', function() {
         
 
         $window.ga = function() {};
-        spyOn($window, 'ga')
+        spyOn($window, 'ga');
         spyOn($rootScope, '$broadcast');
         
         
