@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 sudo apt-get update
 sudo apt-get install nodejs nodejs-legacy npm -y
 sudo npm install -g npm@latest
-sudo npm install -g yo bower grunt-cli
+sudo npm install -g bower grunt-cli yo generator-angular
 
 # Fix premission issues that npm sometimes causes installing things globally
 sudo npm cache clear
