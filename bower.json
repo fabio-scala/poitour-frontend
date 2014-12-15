@@ -13,7 +13,6 @@
     "angular-ui-select": "~0.9.0",
     "angular-ui-utils": "~0.1.1",
     "angular-bootstrap": "~0.12.0",
-    "angular-loading-bar": "~0.6.0",
     "angular-leaflet-directive": "~0.7.9",
     "Leaflet.awesome-markers": "~2.0.2",
     "font-awesome": "~4.2.0",

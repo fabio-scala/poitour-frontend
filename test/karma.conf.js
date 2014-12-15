@@ -31,7 +31,6 @@ module.exports = function(config) {
       'bower_components/angular-ui-select/dist/select.js',
       'bower_components/angular-ui-utils/ui-utils.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
-      'bower_components/angular-loading-bar/build/loading-bar.js',
       'bower_components/leaflet/dist/leaflet.js',
       'bower_components/leaflet/dist/leaflet-src.js',
       'bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.js',
