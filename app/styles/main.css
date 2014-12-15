@@ -85,6 +85,12 @@ body {
 	box-shadow: 5px 0px 30px 0px rgba(0,0,0,0.75);
 }
 
+/* Fixes scrolling issue in form when blocked */
+#sidebar .blockOverlay {
+	width: 300px !important;
+	position: fixed !important;
+}
+
 
 form .tooltip-inner {
 	text-align:left !important;

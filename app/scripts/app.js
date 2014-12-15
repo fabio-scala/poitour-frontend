@@ -18,8 +18,7 @@ angular.module('poitourApp', [
     'ui.router',
     'leaflet-directive',
     'ngToast',
-    'angular-carousel',
-    'cfp.loadingBar'
+    'angular-carousel'
 ]).config(function($tooltipProvider, $stateProvider, $urlRouterProvider, ngToastProvider) {
     
     // bug: https://github.com/angular-ui/bootstrap/issues/2828
