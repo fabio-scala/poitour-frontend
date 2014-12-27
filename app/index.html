@@ -229,7 +229,7 @@
 							<td>
 							<span ng-bind-html="category.display_name"></span>
 								<!-- Splice index -> reversed order because of orderBy filter -->
-								<i class="fa fa-close" style="float: right; cursor: pointer;" ng-click="fc.tour.categories.splice(fc.tour.categories.length - $index - 1, 1)"></i>
+								<i class="fa fa-close" style="float: right; cursor: pointer;" ng-click="fc.tour.categories.splice($index, 1)"></i>
 								<div>
 									<rating ng-model="category.weight" max="10"></rating>
 								</div>
